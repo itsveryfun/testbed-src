@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="testbed-scenario" content="source_site">
+<title>Testbed Source Site</title>
+<style>
+  body { margin: 0; font: 15px/1.6 -apple-system, "Helvetica Neue", Arial, sans-serif; color: #1c1c1e; padding-bottom: 120px; }
+  header { padding: 14px 16px; background: #0b57d0; color: #fff; }
+  header h1 { margin: 0; font-size: 18px; }
+  nav a { color: #0b57d0; margin-right: 14px; }
+  main { padding: 0 16px; }
+  article { margin: 18px 0; }
+  article h2 { font-size: 16px; margin: 0 0 6px; }
+  p { margin: 0 0 12px; color: #3c3c43; }
+  .tb-filler { height: 900px; background: linear-gradient(#fafafa, #f0f0f0); border: 1px dashed #ddd; }
+  /* An ad container only counts as a slot once it renders at a plausible ad size: the
+     platform floors are 32 CSS px on the short side and 12000 px of area. Everything here
+     clears both except .tb-pixel, which exists precisely to be classified dormant. */
+  .tb-slot { background: #f4f6f8; border: 1px solid #d5dae0; display: flex; align-items: center;
+             justify-content: center; margin: 14px 0; }
+  .tb-slot-banner { width: 320px; height: 100px; }
+  .tb-creative { text-align: center; }
+  .tb-creative a { display: inline-block; padding: 8px 14px; background: #0b57d0; color: #fff;
+                   border-radius: 4px; text-decoration: none; }
+  .tb-pixel { width: 1px; height: 1px; overflow: hidden; }
+  #tb-anchor-slot { position: fixed; left: 0; right: 0; bottom: 0; height: 62px; background: #fff;
+                    border-top: 1px solid #d5dae0; display: flex; align-items: center; z-index: 20; }
+  #tb-anchor-slot .tb-slot { width: 320px; height: 50px; margin: 6px auto; }
+  #tb-anchor-collapse { position: absolute; right: 6px; top: -22px; height: 22px; padding: 0 8px;
+                        border: 1px solid #d5dae0; border-bottom: 0; background: #fff; font-size: 12px; }
+  #tb-interstitial { position: fixed; inset: 0; background: rgba(0,0,0,.72); z-index: 30;
+                     display: none; align-items: center; justify-content: center; }
+  #tb-interstitial.tb-open { display: flex; }
+  #tb-interstitial .tb-slot { width: 300px; height: 250px; background: #fff; }
+  #tb-interstitial-close { position: absolute; top: 14px; right: 14px; width: 34px; height: 34px;
+                           border-radius: 17px; border: 0; background: #fff; font-size: 17px; }
+  footer { padding: 16px; color: #8a8a8e; font-size: 13px; }
+</style>
+</head>
+<body>
+<header><h1>Daily Tech Digest</h1></header>
+
+<main>
+  <nav>
+    <a href="news.html" id="tb-nav-news">Newsroom</a>
+    <a href="privacy.html" id="tb-nav-privacy">Privacy</a>
+  </nav>
+
+  <article>
+    <h2>Battery life, measured properly</h2>
+    <p>We ran the same loop on nine handsets for two weeks and the ranking barely moved after
+       the first day. Here is what actually changed between firmware revisions.</p>
+  </article>
+
+  <!-- banner slot #1. `data-ad-slot` carries the reporting identity: ad_unit = banner#hero. -->
+  <div class="tb-slot tb-slot-banner" data-ad-slot="hero" data-ad-id="tb-banner-hero">
+    <div class="tb-creative">
+      <strong>Refinance in minutes</strong><br>
+      <a href="https://lp.appicstar.com/index.html" id="tb-banner-hero-cta">See rates</a>
+    </div>
+  </div>
+
+  <article>
+    <h2>The quiet return of the small phone</h2>
+    <p>Three vendors shipped a sub-six-inch flagship this year. Two of them sold out.</p>
+  </article>
+
+  <div class="tb-filler"></div>
+
+  <article>
+    <h2>What the spec sheet leaves out</h2>
+    <p>Peak brightness is a marketing number. Sustained brightness is the one you will live with.</p>
+  </article>
+
+  <!-- banner slot #2. A different `data-ad-slot` value so the two banners stay two distinct
+       Page Placements in reporting instead of collapsing into one ad_unit. -->
+  <div class="tb-slot tb-slot-banner" data-ad-slot="infeed" data-ad-id="tb-banner-infeed">
+    <div class="tb-creative">
+      <strong>Compare 12 lenders</strong><br>
+      <a href="https://lp.appicstar.com/form.html" id="tb-banner-infeed-cta">Get a quote</a>
+    </div>
+  </div>
+
+  <!-- 1x1: an ad marker that never rendered at an ad size. It must be classified dormant
+       (below_ad_size), not counted as an observed slot, and must not burn an ad_unit. -->
+  <div class="tb-slot tb-pixel" data-ad-slot="tracking" data-ad-id="tb-pixel"></div>
+
+  <article>
+    <h2>Repairability scores, one year on</h2>
+    <p>The index moved the needle on screws. It has not moved the needle on batteries.</p>
+  </article>
+</main>
+
+<!-- anchor slot: fixed to the viewport bottom, with its own collapse handle. -->
+<div id="tb-anchor-slot">
+  <button id="tb-anchor-collapse" type="button" aria-label="Collapse ad">Collapse</button>
+  <div class="tb-slot" data-ad-slot="footer" data-ad-id="tb-anchor-footer">
+    <div class="tb-creative">
+      <a href="https://lp.appicstar.com/shop.html" id="tb-anchor-footer-cta">Shop deals</a>
+    </div>
+  </div>
+</div>
+
+<!-- interstitial: appears on a timer so a single load-and-collect pass cannot see it. -->
+<div id="tb-interstitial">
+  <button id="tb-interstitial-close" type="button" aria-label="Close ad">&times;</button>
+  <div class="tb-slot" data-ad-slot="entry" data-ad-id="tb-interstitial-entry">
+    <div class="tb-creative">
+      <strong>Limited offer</strong><br>
+      <a href="https://lp.appicstar.com/ads.html" id="tb-interstitial-entry-cta">Open</a>
+    </div>
+  </div>
+</div>
+
+<footer>Testbed source site — synthetic content, no real advertiser.</footer>
+
+<script>
+  // Page-owned behaviour, not injected script: this is the site under observation, so its
+  // own JS is part of what the SDK is supposed to cope with.
+  document.getElementById('tb-anchor-collapse').addEventListener('click', function () {
+    var slot = document.getElementById('tb-anchor-slot');
+    slot.style.display = slot.style.display === 'none' ? 'flex' : 'none';
+  });
+  var interstitial = document.getElementById('tb-interstitial');
+  document.getElementById('tb-interstitial-close').addEventListener('click', function () {
+    interstitial.classList.remove('tb-open');
+  });
+  setTimeout(function () { interstitial.classList.add('tb-open'); }, 2500);
+</script>
+</body>
+</html>
